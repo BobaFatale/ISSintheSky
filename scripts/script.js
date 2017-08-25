@@ -108,8 +108,8 @@ iitsApp.getSunRiseSet = function(){
 	  method: 'GET',
 	}).then(function(res){
 		console.log(res);
-		iitsApp.sunRiseSet.sunrise = .daily.data[0].sunriseTime;
-		iitsApp.sunRiseSet.sunset = .daily.data[0].sunsetTime;
+		iitsApp.sunRiseSet.sunrise = res.daily.data[0].sunriseTime;
+		iitsApp.sunRiseSet.sunset = res.daily.data[0].sunsetTime;
 	}).fail(function(error){
 		alert('weather API call failed', error);
 	});
