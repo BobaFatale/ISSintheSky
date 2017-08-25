@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ISS in the Sky</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="styles/style.css"/>
+</head>
+<body>
+	<form action="">
+		<label for="autocomplete">Enter your city</label>
+		<input id="autocomplete" placeholder="Enter your address" onFocus="iitsApp.geolocate()"  type="text"></input>
+    <!-- <input id="autocomplete" placeholder="Enter your address"  type="text"></input> -->
+	</form>
+	<div class="output">
+		<button id="prevButton" class="output__button">Prev</button>
+		<div class="output__nextPass">
+
+		</div>
+		<div class="output__weather">
+		
+		</div>
+		<div class="output__night">
+			
+		</div>
+		<div class="output__page">
+			
+		</div>
+		<button id="nextButton" class="output__button">Next</button>
+	</div>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt1RlZWDmVpvsEvcsbEIfoSUH3ztceOk
+	&libraries=places&callback=iitsApp.initGoogleMaps"
+  type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="scripts/moment.js"></script>
+	<script src="scripts/moment-timezone-with-data.js"></script>
+	<script type="text/javascript" src='scripts/script.js'></script>
+</body>
+</html>
