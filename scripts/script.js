@@ -5,6 +5,7 @@ iitsApp.inputLat = 0;
 iitsApp.inputLoc = '';
 iitsApp.passes = [];
 iitsApp.passWeather = [];
+iitsApp.sunRiseSet = {};
 
 
 //needs to be its own function for *reasons* (runs when the google maps JS api is loaded, won't work if run at later time)
@@ -45,6 +46,7 @@ iitsApp.cleanStart = function(){
 	iitsApp.inputLoc = '';
 	iitsApp.passes = [];
 	iitsApp.passWeather = [];
+	iitsApp.sunRiseSet = {};
 
 	iitsApp.getLocation();
 }
@@ -82,7 +84,7 @@ iitsApp.getPass = function(){
 	  data: {
   	"lat": iitsApp.inputLat,
     "lon": iitsApp.inputLng,
-    "n":5
+    "n":25
 	  }
 	}).then(function(res){
 		iitsApp.parseDate(res)
@@ -93,7 +95,25 @@ iitsApp.getPass = function(){
 iitsApp.parseDate = function(issRes){
 	console.log(issRes);
 	iitsApp.passes = issRes.response;
-	iitsApp.getWeather();
+	console.log(iitsApp.passes);
+	iitsApp.getSunRiseSet();
+}
+iitsApp.getSunRiseSet = function(){
+	console.log('getSunRiseSet GO');
+	let date = iitsApp.passes[0].risetime;
+	console.log('weatherAPI call');
+	$.ajax({
+		url: `https://api.darksky.net/forecast/122583d9670d1bda0d310f91a9c4c870/${iitsApp.inputLat},${iitsApp.inputLng},${date}`,
+		dataType : 'jsonp',
+	  method: 'GET',
+	}).then(function(res){
+		console.log(res);
+		iitsApp.sunRiseSet.sunrise = .daily.data[0].sunriseTime;
+		iitsApp.sunRiseSet.sunset = .daily.data[0].sunsetTime;
+	}).fail(function(error){
+		alert('weather API call failed', error);
+	});
+
 }
 iitsApp.getWeather = function(){
 	console.log('getWeather GO');
@@ -137,11 +157,11 @@ iitsApp.displayResults = function(){
 	let timezone = iitsApp.passWeather[iitsApp.pageIndex].timezone;
 	let unixStartTime = iitsApp.passes[iitsApp.pageIndex].risetime;
 	let tzStartTime = moment.tz(unixStartTime*1000,timezone);
-	let engStartTime = tzStartTime.format("dddd, MMMM Do YYYY, HH:mm:ss ZZ z");
+	let engStartTime = tzStartTime.format("dddd, MMMM Do YYYY, HH:mm:ss ZZ (z)");
 	// let UTCStartTime = engStartTime.toUTCString();
 	let unixEndTime = iitsApp.passes[iitsApp.pageIndex].risetime + iitsApp.passes[iitsApp.pageIndex].duration;
 	let tzEndTime =  moment.tz(unixStartTime*1000,timezone);
-	let engEndTime = tzStartTime.format("HH:mm:ss ZZ");
+	let engEndTime = tzEndTime.format("HH:mm:ss ZZ (z)");
 	let summary = iitsApp.passWeather[iitsApp.pageIndex].summary;
 	let clouds = iitsApp.passWeather[iitsApp.pageIndex].clouds;
 	let night = iitsApp.passWeather[iitsApp.pageIndex].night;
