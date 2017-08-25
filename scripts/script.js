@@ -4,8 +4,8 @@ iitsApp.inputLng = 0;
 iitsApp.inputLat = 0;
 iitsApp.inputLoc = '';
 iitsApp.passes = [];
+iitsApp.validPasses = [];
 iitsApp.passWeather = [];
-iitsApp.sunRiseSet = {};
 
 
 //needs to be its own function for *reasons* (runs when the google maps JS api is loaded, won't work if run at later time)
@@ -45,8 +45,8 @@ iitsApp.cleanStart = function(){
 	iitsApp.inputLng = 0;
 	iitsApp.inputLoc = '';
 	iitsApp.passes = [];
+	iitsApp.validPasses = [];
 	iitsApp.passWeather = [];
-	iitsApp.sunRiseSet = {};
 
 	iitsApp.getLocation();
 }
@@ -87,6 +87,7 @@ iitsApp.getPass = function(){
     "n":25
 	  }
 	}).then(function(res){
+		console.log(res);
 		iitsApp.parseDate(res)
 	}).fail(function(error){
 		console.log('error',error);
@@ -108,16 +109,42 @@ iitsApp.getSunRiseSet = function(){
 	  method: 'GET',
 	}).then(function(res){
 		console.log(res);
-		iitsApp.sunRiseSet.sunrise = res.daily.data[0].sunriseTime;
-		iitsApp.sunRiseSet.sunset = res.daily.data[0].sunsetTime;
+		let sunrise = res.daily.data[0].sunriseTime;
+		let sunset = res.daily.data[0].sunsetTime;
+		console.log(sunrise,sunset);
+		iitsApp.nightPasses(sunrise,sunset);
 	}).fail(function(error){
 		alert('weather API call failed', error);
 	});
-
+}
+iitsApp.nightPasses = function(sunrise, sunset){
+	console.log('nightPasses GO');
+	//take sunrise and sunset function
+	//declare an array counter of 0
+	let passCounter = 0;
+	//iterate through the passes array
+	for (var i = 0; i < iitsApp.passes.length; i++) {
+		//if iitsApp.passes[i].risetime < sunrise or > sunset
+		if (iitsApp.passes[i].risetime < sunrise || iitsApp.passes[i].risetime > sunset) {
+			//add iitsApp.passes[i] to the iitsApp.validPasses array
+			console.log('add pass');
+			iitsApp.validPasses.push(iitsApp.passes[i]);
+			//increase the arraycounter
+			passCounter++;
+		}
+		//if the arraycounter is >= 5
+		if (passCounter >= 5) {
+			//end the loop
+			i = iitsApp.passes.length;
+		}
+	}
+	console.log(iitsApp.validPasses);
+	//call the getWeather function
+	iitsApp.getWeather();
 }
 iitsApp.getWeather = function(){
 	console.log('getWeather GO');
-	let date = iitsApp.passes[iitsApp.pageIndex].risetime;
+	let date = iitsApp.validPasses[iitsApp.pageIndex].risetime;
 	if (iitsApp.passWeather[iitsApp.pageIndex] === undefined) {
 		console.log('weatherAPI call');
 		$.ajax({
@@ -155,11 +182,10 @@ iitsApp.parseWeather = function(weatherData){
 }
 iitsApp.displayResults = function(){
 	let timezone = iitsApp.passWeather[iitsApp.pageIndex].timezone;
-	let unixStartTime = iitsApp.passes[iitsApp.pageIndex].risetime;
+	let unixStartTime = iitsApp.validPasses[iitsApp.pageIndex].risetime;
 	let tzStartTime = moment.tz(unixStartTime*1000,timezone);
 	let engStartTime = tzStartTime.format("dddd, MMMM Do YYYY, HH:mm:ss ZZ (z)");
-	// let UTCStartTime = engStartTime.toUTCString();
-	let unixEndTime = iitsApp.passes[iitsApp.pageIndex].risetime + iitsApp.passes[iitsApp.pageIndex].duration;
+	let unixEndTime = iitsApp.validPasses[iitsApp.pageIndex].risetime + iitsApp.validPasses[iitsApp.pageIndex].duration;
 	let tzEndTime =  moment.tz(unixStartTime*1000,timezone);
 	let engEndTime = tzEndTime.format("HH:mm:ss ZZ (z)");
 	let summary = iitsApp.passWeather[iitsApp.pageIndex].summary;
