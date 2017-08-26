@@ -6,7 +6,8 @@ iitsApp.inputLoc = '';
 iitsApp.passes = [];
 iitsApp.validPasses = [];
 iitsApp.passWeather = [];
-
+iitsApp.sunTime = {};
+iitsApp.passCounter = 0;
 
 //needs to be its own function for *reasons* (runs when the google maps JS api is loaded, won't work if run at later time)
 iitsApp.initGoogleMaps = function() {
@@ -43,10 +44,12 @@ iitsApp.cleanStart = function(){
 	iitsApp.pageIndex = 0;
 	iitsApp.inputLat = 0;
 	iitsApp.inputLng = 0;
+	iitsApp.passCounter = 0;
 	iitsApp.inputLoc = '';
 	iitsApp.passes = [];
 	iitsApp.validPasses = [];
 	iitsApp.passWeather = [];
+	iitsApp.sunTime = {};
 
 	iitsApp.getLocation();
 }
@@ -105,65 +108,91 @@ iitsApp.nightPasses = function(){
 	//take sunrise and sunset function
 	//declare an array counter of 0
 	let passCounter = 0;
-	let sunTime = {};
 	//get the sun rise and set for the first returned pass
 	let DSrequestOne = iitsApp.getSunRiseSet(0);
 	DSrequestOne.then(function(res){
 		console.log(res);
-		sunTime.sunrise = res.daily.data[0].sunriseTime;
-		sunTime.sunset = res.daily.data[0].sunsetTime;
-		console.log(sunTime.sunrise, sunTime.sunset);
+		iitsApp.sunTime.sunrise = res.daily.data[0].sunriseTime;
+		iitsApp.sunTime.sunset = res.daily.data[0].sunsetTime;
+		console.log(iitsApp.sunTime.sunrise, iitsApp.sunTime.sunset);
 		//iterate through the passes array
-		for (var i = 0; i < iitsApp.passes.length; i++) {
-			//if the pass time > sunset + 28800 (8 hours in seconds)
-			console.log(i);
-			if (iitsApp.passes[i].risetime > sunTime.sunset + 28800) {
-				//get a new sunrise and sunset
-				//pass the index to getSunRiseSet
-				console.log(iitsApp.passes[i].risetime);
-				console.log('DSRequestTwo');
-				DSrequestTwo = iitsApp.getSunRiseSet(i);
-				DSrequestTwo.done(function(res){
-					console.log(i,'DSR2res', res);
-					sunTime.sunrise = res.daily.data[0].sunriseTime;
-					sunTime.sunset = res.daily.data[0].sunsetTime;
-					//if iitsApp.passes[i].risetime < sunrise or > sunset
-					if (iitsApp.passes[i].risetime < sunTime.sunrise || iitsApp.passes[i].risetime > sunTime.sunset) {
-						//add iitsApp.passes[i] to the iitsApp.validPasses array
-						console.log('add pass DSrequestTwo');
-						iitsApp.validPasses.push(iitsApp.passes[i]);
-						//increase the arraycounter
-						passCounter++;
-					}
-					//if the arraycounter is >= 5
-					if (passCounter >= 5) {
-						//end the loop
-						i = iitsApp.passes.length;
-					}
-				});
-			}else{
-				//if iitsApp.passes[i].risetime < sunrise or > sunset
-				if (iitsApp.passes[i].risetime < sunTime.sunrise || iitsApp.passes[i].risetime > sunTime.sunset) {
-					//add iitsApp.passes[i] to the iitsApp.validPasses array
-					console.log('add pass');
-					iitsApp.validPasses.push(iitsApp.passes[i]);
-					//increase the arraycounter
-					passCounter++;
-				}
-				//if the arraycounter is >= 5
-				if (passCounter >= 5) {
-					//end the loop
-					i = iitsApp.passes.length;
-				}
-			}	
+		// for (var i = 0; i < iitsApp.passes.length; i++) {
+		// 	console.log(i);
+				
 			
-		}
+		// }
+		iitsApp.checksunDate(0);
 		console.log(iitsApp.validPasses);
 		//call the getWeather function
-		iitsApp.getWeather();
+		// iitsApp.getWeather();
 	}).fail(function(error){
 		alert('weather API call failed', error);
 	});
+}
+iitsApp.checksunDate = function(i){
+	//if the pass time > sunset + 28800 (8 hours in seconds)
+	if (iitsApp.passes[i].risetime > iitsApp.sunTime.sunset + 28800) {
+		console.log('iitsApp.passes[i].risetime > iitsApp.sunTime.sunset + 28800');
+		//get a new sunrise and sunset
+		//pass the index to getSunRiseSet
+		console.log(iitsApp.passes[i].risetime);
+		console.log('DSRequestTwo');
+		DSrequestTwo = iitsApp.getSunRiseSet(i);
+		DSrequestTwo.done(function(res){
+			console.log(i,'DSR2res', res);
+			iitsApp.sunTime.sunrise = res.daily.data[0].sunriseTime;
+			iitsApp.sunTime.sunset = res.daily.data[0].sunsetTime;
+			//if iitsApp.passes[i].risetime < sunrise or > sunset
+			if (iitsApp.passes[i].risetime < iitsApp.sunTime.sunrise || iitsApp.passes[i].risetime > iitsApp.sunTime.sunset) {
+				//add iitsApp.passes[i] to the iitsApp.validPasses array
+				console.log('add pass DSrequestTwo');
+				iitsApp.validPasses.push(iitsApp.passes[i]);
+				console.log('validpasses',iitsApp.validPasses);
+				//increase the arraycounter
+				iitsApp.passCounter++;
+				if (iitsApp.passCounter >= 5) {
+					//if the arraycounter is >= 5
+					//end the loop
+					//call the getWeather function
+					iitsApp.getWeather();
+				}else{
+					if(i++ < iitsApp.passes.length){
+						iitsApp.checksunDate(i++);
+					}else{
+						iitsApp.getWeather();
+					}
+				}
+			}else{
+				if(i++ < iitsApp.passes.length){
+					iitsApp.checksunDate(i++);
+				}else{
+					iitsApp.getWeather();
+				}
+			}
+		});
+	}else{
+		console.log('iitsApp.passes[i].risetime !> iitsApp.sunTime.sunset + 28800');
+		//if iitsApp.passes[i].risetime < sunrise or > sunset
+			if (iitsApp.passes[i].risetime < iitsApp.sunTime.sunrise || iitsApp.passes[i].risetime > iitsApp.sunTime.sunset) {
+				//add iitsApp.passes[i] to the iitsApp.validPasses array
+				console.log('add pass DSrequestTwo');
+				iitsApp.validPasses.push(iitsApp.passes[i]);
+				console.log('validpasses',iitsApp.validPasses);
+				//increase the arraycounter
+				iitsApp.passCounter++;
+				if (iitsApp.passCounter >= 5) {
+					//if the arraycounter is >= 5
+					//end the loop
+					//call the getWeather function
+					iitsApp.getWeather();
+				}else{
+					iitsApp.checksunDate(i++);
+				}
+			}else{
+				i++
+				iitsApp.checksunDate(i);
+			}
+	}
 }
 iitsApp.getSunRiseSet = function(index){
 	console.log('getSunRiseSet GO');
