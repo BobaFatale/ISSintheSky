@@ -87,7 +87,7 @@ iitsApp.getPass = function(){
 	  data: {
   	"lat": iitsApp.inputLat,
     "lon": iitsApp.inputLng,
-    "n":25
+    "n":100
 	  }
 	}).then(function(res){
 		console.log(res);
@@ -284,7 +284,7 @@ iitsApp.displayResults = function(){
 	let night = iitsApp.passWeather[iitsApp.pageIndex].night;
 	$('.output__nextPass').html(`<p>The next pass of the International Space Station over ${iitsApp.inputLoc} will be between ${engStartTime} and ${engEndTime}</p>`);
 	$('.output__weather').html(`<p>The weather will be ${summary} with a cloud cover of ${clouds*100}%</p>`);
-	$('.output__page').html(`<p>${(iitsApp.pageIndex + 1)} / 5</p>`);
+	$('.output__page').html(`<p>${(iitsApp.pageIndex + 1)} / ${iitsApp.validPasses.length}</p>`);
 	if (night == false){
 		$('.output__night').html(`<p>But the sun will be out so you won't be able to see it 😞</p>`);
 	};
@@ -308,7 +308,7 @@ iitsApp.events = function(){
 		}
 	});
 	$('#nextButton').on('click', function(event){
-		if(iitsApp.pageIndex < 4){
+		if((iitsApp.pageIndex + 1) < iitsApp.validPasses.length){
 			iitsApp.pageIndex++
 			console.log(iitsApp.pageIndex);
 			iitsApp.getWeather();
