@@ -97,51 +97,95 @@ iitsApp.parseDate = function(issRes){
 	console.log(issRes);
 	iitsApp.passes = issRes.response;
 	console.log(iitsApp.passes);
-	iitsApp.getSunRiseSet();
+	iitsApp.nightPasses();
 }
-iitsApp.getSunRiseSet = function(){
-	console.log('getSunRiseSet GO');
-	let date = iitsApp.passes[0].risetime;
-	console.log('weatherAPI call');
-	$.ajax({
-		url: `https://api.darksky.net/forecast/122583d9670d1bda0d310f91a9c4c870/${iitsApp.inputLat},${iitsApp.inputLng},${date}`,
-		dataType : 'jsonp',
-	  method: 'GET',
-	}).then(function(res){
-		console.log(res);
-		let sunrise = res.daily.data[0].sunriseTime;
-		let sunset = res.daily.data[0].sunsetTime;
-		console.log(sunrise,sunset);
-		iitsApp.nightPasses(sunrise,sunset);
-	}).fail(function(error){
-		alert('weather API call failed', error);
-	});
-}
-iitsApp.nightPasses = function(sunrise, sunset){
+
+iitsApp.nightPasses = function(){
 	console.log('nightPasses GO');
 	//take sunrise and sunset function
 	//declare an array counter of 0
 	let passCounter = 0;
-	//iterate through the passes array
-	for (var i = 0; i < iitsApp.passes.length; i++) {
-		//if iitsApp.passes[i].risetime < sunrise or > sunset
-		if (iitsApp.passes[i].risetime < sunrise || iitsApp.passes[i].risetime > sunset) {
-			//add iitsApp.passes[i] to the iitsApp.validPasses array
-			console.log('add pass');
-			iitsApp.validPasses.push(iitsApp.passes[i]);
-			//increase the arraycounter
-			passCounter++;
+	let sunTime = {};
+	//get the sun rise and set for the first returned pass
+	let DSrequestOne = iitsApp.getSunRiseSet(0);
+	DSrequestOne.then(function(res){
+		console.log(res);
+		sunTime.sunrise = res.daily.data[0].sunriseTime;
+		sunTime.sunset = res.daily.data[0].sunsetTime;
+		console.log(sunTime.sunrise, sunTime.sunset);
+		//iterate through the passes array
+		for (var i = 0; i < iitsApp.passes.length; i++) {
+			//if the pass time > sunset + 28800 (8 hours in seconds)
+			console.log(i);
+			if (iitsApp.passes[i].risetime > sunTime.sunset + 28800) {
+				//get a new sunrise and sunset
+				//pass the index to getSunRiseSet
+				console.log(iitsApp.passes[i].risetime);
+				console.log('DSRequestTwo');
+				DSrequestTwo = iitsApp.getSunRiseSet(i);
+				DSrequestTwo.done(function(res){
+					console.log(i,'DSR2res', res);
+					sunTime.sunrise = res.daily.data[0].sunriseTime;
+					sunTime.sunset = res.daily.data[0].sunsetTime;
+					//if iitsApp.passes[i].risetime < sunrise or > sunset
+					if (iitsApp.passes[i].risetime < sunTime.sunrise || iitsApp.passes[i].risetime > sunTime.sunset) {
+						//add iitsApp.passes[i] to the iitsApp.validPasses array
+						console.log('add pass DSrequestTwo');
+						iitsApp.validPasses.push(iitsApp.passes[i]);
+						//increase the arraycounter
+						passCounter++;
+					}
+					//if the arraycounter is >= 5
+					if (passCounter >= 5) {
+						//end the loop
+						i = iitsApp.passes.length;
+					}
+				});
+			}else{
+				//if iitsApp.passes[i].risetime < sunrise or > sunset
+				if (iitsApp.passes[i].risetime < sunTime.sunrise || iitsApp.passes[i].risetime > sunTime.sunset) {
+					//add iitsApp.passes[i] to the iitsApp.validPasses array
+					console.log('add pass');
+					iitsApp.validPasses.push(iitsApp.passes[i]);
+					//increase the arraycounter
+					passCounter++;
+				}
+				//if the arraycounter is >= 5
+				if (passCounter >= 5) {
+					//end the loop
+					i = iitsApp.passes.length;
+				}
+			}	
+			
 		}
-		//if the arraycounter is >= 5
-		if (passCounter >= 5) {
-			//end the loop
-			i = iitsApp.passes.length;
-		}
-	}
-	console.log(iitsApp.validPasses);
-	//call the getWeather function
-	iitsApp.getWeather();
+		console.log(iitsApp.validPasses);
+		//call the getWeather function
+		iitsApp.getWeather();
+	}).fail(function(error){
+		alert('weather API call failed', error);
+	});
 }
+iitsApp.getSunRiseSet = function(index){
+	console.log('getSunRiseSet GO');
+	let date = iitsApp.passes[index].risetime;
+	console.log('weatherAPI call');
+	return $.ajax({
+		url: `https://api.darksky.net/forecast/122583d9670d1bda0d310f91a9c4c870/${iitsApp.inputLat},${iitsApp.inputLng},${date}`,
+		dataType : 'jsonp',
+	  method: 'GET',
+	})
+
+	// .then(function(res){
+	// 	console.log(res);
+	// 	let sunrise = res.daily.data[index].sunriseTime;
+	// 	let sunset = res.daily.data[index].sunsetTime;
+	// 	console.log(sunrise, sunset);
+	// 	return [sunrise,sunset];
+	// }).fail(function(error){
+	// 	alert('weather API call failed', error);
+	// });
+}
+
 iitsApp.getWeather = function(){
 	console.log('getWeather GO');
 	let date = iitsApp.validPasses[iitsApp.pageIndex].risetime;
