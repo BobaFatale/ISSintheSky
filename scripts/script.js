@@ -131,6 +131,7 @@ iitsApp.nightPasses = function(){
 }
 iitsApp.checksunDate = function(i){
 	//if the pass time > sunset + 28800 (8 hours in seconds)
+	console.log(i);
 	if (iitsApp.passes[i].risetime > iitsApp.sunTime.sunset + 28800) {
 		console.log('iitsApp.passes[i].risetime > iitsApp.sunTime.sunset + 28800');
 		//get a new sunrise and sunset
@@ -156,14 +157,18 @@ iitsApp.checksunDate = function(i){
 					//call the getWeather function
 					iitsApp.getWeather();
 				}else{
-					if(i++ < iitsApp.passes.length){
+					if((i + 1) < iitsApp.passes.length){
+						i++;
+						console.log('call check sun', i);
 						iitsApp.checksunDate(i++);
 					}else{
 						iitsApp.getWeather();
 					}
 				}
 			}else{
-				if(i++ < iitsApp.passes.length){
+				if((i + 1) < iitsApp.passes.length){
+					i++;
+					console.log('call check sun', i);
 					iitsApp.checksunDate(i++);
 				}else{
 					iitsApp.getWeather();
@@ -175,7 +180,7 @@ iitsApp.checksunDate = function(i){
 		//if iitsApp.passes[i].risetime < sunrise or > sunset
 			if (iitsApp.passes[i].risetime < iitsApp.sunTime.sunrise || iitsApp.passes[i].risetime > iitsApp.sunTime.sunset) {
 				//add iitsApp.passes[i] to the iitsApp.validPasses array
-				console.log('add pass DSrequestTwo');
+				console.log('add pass no request');
 				iitsApp.validPasses.push(iitsApp.passes[i]);
 				console.log('validpasses',iitsApp.validPasses);
 				//increase the arraycounter
@@ -186,11 +191,24 @@ iitsApp.checksunDate = function(i){
 					//call the getWeather function
 					iitsApp.getWeather();
 				}else{
-					iitsApp.checksunDate(i++);
+					if((i + 1) < iitsApp.passes.length){
+						// console.log('i++ < iitsApp.passes.length =',i++ < iitsApp.passes.length);
+						i++;
+						console.log('call check sun', i);
+						iitsApp.checksunDate(i++);
+					}else{
+						iitsApp.getWeather();
+					}
 				}
 			}else{
-				i++
-				iitsApp.checksunDate(i);
+				if((i + 1) < iitsApp.passes.length){
+						// console.log('i++ < iitsApp.passes.length =',i++ < iitsApp.passes.length);
+						i++;
+						console.log('call check sun', i);
+						iitsApp.checksunDate(i);
+					}else{
+						iitsApp.getWeather();
+					}
 			}
 	}
 }
