@@ -93,7 +93,7 @@ iitsApp.getPass = function(){
 		console.log(res);
 		iitsApp.parseDate(res)
 	}).fail(function(error){
-		console.log('error',error);
+		console.log('ISS Api error',error);
 	});
 }
 iitsApp.parseDate = function(issRes){
@@ -105,9 +105,6 @@ iitsApp.parseDate = function(issRes){
 
 iitsApp.nightPasses = function(){
 	console.log('nightPasses GO');
-	//take sunrise and sunset function
-	//declare an array counter of 0
-	let passCounter = 0;
 	//get the sun rise and set for the first returned pass
 	let DSrequestOne = iitsApp.getSunRiseSet(0);
 	DSrequestOne.then(function(res){
@@ -115,16 +112,7 @@ iitsApp.nightPasses = function(){
 		iitsApp.sunTime.sunrise = res.daily.data[0].sunriseTime;
 		iitsApp.sunTime.sunset = res.daily.data[0].sunsetTime;
 		console.log(iitsApp.sunTime.sunrise, iitsApp.sunTime.sunset);
-		//iterate through the passes array
-		// for (var i = 0; i < iitsApp.passes.length; i++) {
-		// 	console.log(i);
-				
-			
-		// }
 		iitsApp.checksunDate(0);
-		console.log(iitsApp.validPasses);
-		//call the getWeather function
-		// iitsApp.getWeather();
 	}).fail(function(error){
 		alert('weather API call failed', error);
 	});
@@ -221,16 +209,6 @@ iitsApp.getSunRiseSet = function(index){
 		dataType : 'jsonp',
 	  method: 'GET',
 	})
-
-	// .then(function(res){
-	// 	console.log(res);
-	// 	let sunrise = res.daily.data[index].sunriseTime;
-	// 	let sunset = res.daily.data[index].sunsetTime;
-	// 	console.log(sunrise, sunset);
-	// 	return [sunrise,sunset];
-	// }).fail(function(error){
-	// 	alert('weather API call failed', error);
-	// });
 }
 
 iitsApp.getWeather = function(){
@@ -246,7 +224,7 @@ iitsApp.getWeather = function(){
 			console.log(res);
 			iitsApp.parseWeather(res)
 		}).fail(function(error){
-
+			console.log('error retreiving weather data', error);
 		});
 	}else{
 		iitsApp.displayResults();
