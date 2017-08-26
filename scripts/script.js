@@ -254,7 +254,7 @@ iitsApp.getWeather = function(){
 }
 iitsApp.parseWeather = function(weatherData){
 	let weatherSumm = weatherData.currently.summary
-	let cloudCover = weatherData.currently.cloudCover
+	let cloudCover = Math.floor(weatherData.currently.cloudCover *100);
 	let date = weatherData.currently.time;
 	let sunrise = weatherData.daily.data[0].sunriseTime;
 	let sunset = weatherData.daily.data[0].sunsetTime;
@@ -283,7 +283,7 @@ iitsApp.displayResults = function(){
 	let clouds = iitsApp.passWeather[iitsApp.pageIndex].clouds;
 	let night = iitsApp.passWeather[iitsApp.pageIndex].night;
 	$('.output__nextPass').html(`<p>The next pass of the International Space Station over ${iitsApp.inputLoc} will be between ${engStartTime} and ${engEndTime}</p>`);
-	$('.output__weather').html(`<p>The weather will be ${summary} with a cloud cover of ${clouds*100}%</p>`);
+	$('.output__weather').html(`<p>The weather will be ${summary} with a cloud cover of ${clouds}%</p>`);
 	$('.output__page').html(`<p>${(iitsApp.pageIndex + 1)} / ${iitsApp.validPasses.length}</p>`);
 	if (night == false){
 		$('.output__night').html(`<p>But the sun will be out so you won't be able to see it 😞</p>`);
