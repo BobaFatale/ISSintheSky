@@ -43,6 +43,9 @@ form{
 	border: none;
 	border-bottom: 1px solid grey;
 }
+.pac-item:hover, .pac-item-selected, .pac-item:hover .pac-item-query, .pac-item-selected .pac-item-query{
+	color: black;
+}
 .pac-item-query{
 	color: $brightText;
 }
