@@ -1,0 +1,51 @@
+.output{
+	position: absolute;
+	top: 10000px;
+	bottom: 10000px;
+	left: 20px;
+	right: 20px;
+	background-color: $darkPurple;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 3px solid yellow;
+	// border-radius: 25px;
+	color: yellow;
+	transition: all 1s ease;
+}
+.output--active{
+	top: 20px;
+	bottom: 20px;
+}
+.output__container{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.output__info{
+	width: 85%;
+	p{
+		font-size: 1.8rem;
+		text-align: center;
+		padding: 0 20px;
+		margin: 50px;
+	}
+}
+#closeResults{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+}
+
+#prevButton, #nextButton{
+	border: 3px solid yellow;
+	text-align: center;
+	background: transparent;
+	color: yellow;
+	font-size: 1.6rem;
+	text-transform: uppercase;
+	padding: 25px 15px;
+}

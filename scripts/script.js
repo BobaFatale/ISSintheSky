@@ -51,6 +51,7 @@ iitsApp.cleanStart = function(){
 	iitsApp.passWeather = [];
 	iitsApp.sunTime = {};
 
+	$('.output').addClass('output--active');
 	iitsApp.getLocation();
 }
 iitsApp.getLocation = function() {
@@ -276,6 +277,7 @@ iitsApp.init = function(){
 iitsApp.events = function(){
 	$('form').on('submit', function(event){
 		event.preventDefault();
+		iitsApp.cleanStart();
 	});
 
 	$('#prevButton').on('click', function(event){
@@ -291,6 +293,9 @@ iitsApp.events = function(){
 			console.log(iitsApp.pageIndex);
 			iitsApp.getWeather();
 		}
+	});
+	$('#closeResults').on('click',function(event){
+		$('.output').removeClass('output--active');
 	});
 }
 
