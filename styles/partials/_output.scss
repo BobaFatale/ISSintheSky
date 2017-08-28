@@ -5,17 +5,19 @@
 	left: 20px;
 	right: 20px;
 	background-color: $darkPurple;
-	display: flex;
+	display: none;
 	align-items: center;
 	justify-content: center;
-	border: 3px solid yellow;
+	border: 3px solid $brightText;
 	// border-radius: 25px;
-	color: yellow;
+	color: $brightText;
 	transition: all 1s ease;
+	
 }
 .output--active{
 	top: 20px;
 	bottom: 20px;
+	display: flex;
 }
 .output__container{
 	width: 100%;
@@ -41,13 +43,19 @@
 }
 
 #prevButton, #nextButton{
-	border: 3px solid yellow;
+	border: 3px solid $brightText;
 	text-align: center;
 	background: transparent;
-	color: yellow;
+	color: $brightText;
 	font-size: 1.6rem;
 	text-transform: uppercase;
 	padding: 25px 15px;
+}
+#closeResults{
+	font-size: 5rem;
+	border: none;
+	background: transparent;
+	color: rgba(255,255,255,0.5);
 }
 .loading{
 	position: absolute;
