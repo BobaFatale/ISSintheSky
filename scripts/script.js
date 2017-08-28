@@ -52,6 +52,7 @@ iitsApp.cleanStart = function(){
 	iitsApp.sunTime = {};
 
 	$('.output').addClass('output--active');
+	$('.loading').addClass('loading--active');
 	iitsApp.getLocation();
 }
 iitsApp.getLocation = function() {
@@ -251,6 +252,7 @@ iitsApp.parseWeather = function(weatherData){
 	iitsApp.displayResults();
 }
 iitsApp.displayResults = function(){
+	$('.loading').removeClass('loading--active');
 	let timezone = iitsApp.passWeather[iitsApp.pageIndex].timezone;
 	let unixStartTime = iitsApp.validPasses[iitsApp.pageIndex].risetime;
 	let tzStartTime = moment.tz(unixStartTime*1000,timezone);
