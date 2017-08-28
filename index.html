@@ -8,12 +8,17 @@
 	<link rel="stylesheet" href="styles/style.css"/>
 </head>
 <body>
-	<form action="">
-		<label for="autocomplete">Enter a city</label>
-		<input id="autocomplete" placeholder="Enter a city" onFocus="iitsApp.geolocate()"  type="text"></input>
-    <!-- <input id="autocomplete" placeholder="Enter your address"  type="text"></input> -->
-	</form>
-	<div class="output">
+	<main>
+		<form action="">
+			<label for="autocomplete">Enter a city</label>
+			<input id="autocomplete" placeholder="Enter a city" onFocus="iitsApp.geolocate()"  type="text"></input>
+	    <!-- <input id="autocomplete" placeholder="Enter your address"  type="text"></input>-->
+		</form> 
+	</main>
+	<section class="output">
+		<div class="loading">
+			
+		</div>
 		<button id="prevButton" class="output__button">Prev</button>
 		<div class="output__nextPass">
 
@@ -28,13 +33,14 @@
 			
 		</div>
 		<button id="nextButton" class="output__button">Next</button>
-	</div>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt1RlZWDmVpvsEvcsbEIfoSUH3ztceOk
-	&libraries=places&callback=iitsApp.initGoogleMaps"
-  type="text/javascript"></script>
+	</section>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="scripts/moment.js"></script>
 	<script src="scripts/moment-timezone-with-data.js"></script>
 	<script type="text/javascript" src='scripts/script.js'></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt1RlZWDmVpvsEvcsbEIfoSUH3ztceOk
+	&libraries=places&callback=iitsApp.initGoogleMaps"
+  type="text/javascript"></script>
 </body>
 </html>
