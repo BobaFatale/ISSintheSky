@@ -11,18 +11,31 @@ main{
 		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
+		@include respond-to("medium") {
+			flex-direction: column;
+		}
 	}
 }
 h1{
 	width: 50%;
 	text-align: right;
 	padding-right: 5px;
+	@include respond-to("medium") {
+		width: 100%;
+		text-align-last: center;
+	}
 }
 form{
 	// display: block;
 	padding-left: 5px;
 	width: 40%;
 	margin-right: 10%;
+	@include respond-to("medium") {
+		width: 90%;
+		margin-right: 0;
+		padding-left: 0;
+		margin-top: 20px;
+	}
 }
 #autocomplete{
 	width: 100%;
