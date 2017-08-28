@@ -1,3 +1,6 @@
+//add error messaging meant for the user in the event any of the apis fail
+	//specifically the google api seems to fail a lot
+
 var iitsApp = {};
 iitsApp.pageIndex = 0;
 iitsApp.inputLng = 0;
@@ -40,6 +43,7 @@ iitsApp.geolocate = function() {
     });
   }
 }
+//clears all the global variables before running down the function chain to prevent any possibilites of errors from previous run throughs of the app
 iitsApp.cleanStart = function(){
 	iitsApp.pageIndex = 0;
 	iitsApp.inputLat = 0;
@@ -50,16 +54,18 @@ iitsApp.cleanStart = function(){
 	iitsApp.validPasses = [];
 	iitsApp.passWeather = [];
 	iitsApp.sunTime = {};
-
+	//brings up the output pane with the loading overlay
 	$('.output').addClass('output--active');
 	$('.loading').addClass('loading--active');
 	iitsApp.getLocation();
 }
+//getLocation grabs the location from the Google locaitons API and stores the Longitude Latitude and location name for later use. If successful it calls forward to the getPasses function
 iitsApp.getLocation = function() {
-	console.log('getLocation GO');
+	 console.log('getLocation GO');
 	// Get the place details from the autocomplete object.
 	var place = iitsApp.autocomplete.getPlace();
 	console.log(place);
+	//if the user clicked on a place in the autocomplete it will already have full details otherwise need to pass the input to the google geocoder to get a returned object
 	if(place.formatted_address != null){
 		iitsApp.inputLat = place.geometry.location.lat();
 		iitsApp.inputLng = place.geometry.location.lng();
@@ -80,6 +86,7 @@ iitsApp.getLocation = function() {
 		});
 	}
 }
+//getPass() calls the ISS tracking API and gets the next 100 passes for the target LatLng coordinates. If successful it passes the data on to get parsed
 iitsApp.getPass = function(){
 	console.log("getPass GO");
 	$.ajax({
@@ -98,13 +105,14 @@ iitsApp.getPass = function(){
 		console.log('ISS Api error',error);
 	});
 }
+//the parseDate function removes the extraneous information from the response from the ISS tracking API before passing it on the the nighttime checking function
 iitsApp.parseDate = function(issRes){
 	console.log(issRes);
 	iitsApp.passes = issRes.response;
 	console.log(iitsApp.passes);
 	iitsApp.nightPasses();
 }
-
+//nightPasses makes an API call to the DarkSkies API to get the sun rise and set time for the date of the first pass of the ISS before passing this information to checksunDate
 iitsApp.nightPasses = function(){
 	console.log('nightPasses GO');
 	//get the sun rise and set for the first returned pass
@@ -119,6 +127,7 @@ iitsApp.nightPasses = function(){
 		alert('weather API call failed', error);
 	});
 }
+//checksunDate is a recursive function that checks iterates through the array of passes checking if they are at night. every iteration it checks if the current pass is more then 8 hours from sunset of the previous known day, if it is it calls the dark sky api to get a new sun rise and set time to move forward with the evaluation. It ends when there are 5 night time passes or the array has been fully iterated throguh. the recursion is important because the function needs to wait for a response from the API before it continues to iterate through the array of passes
 iitsApp.checksunDate = function(i){
 	//if the pass time > sunset + 28800 (8 hours in seconds)
 	console.log(i);
@@ -202,6 +211,7 @@ iitsApp.checksunDate = function(i){
 			}
 	}
 }
+//getSunRiseSet is a function that returns the promise of a dark sky api call
 iitsApp.getSunRiseSet = function(index){
 	console.log('getSunRiseSet GO');
 	let date = iitsApp.passes[index].risetime;
@@ -213,6 +223,7 @@ iitsApp.getSunRiseSet = function(index){
 	})
 }
 
+//getWeather checks if the weather for the current date has been stored already and if not calls the darksky api to obtain a weather object for the specified pass
 iitsApp.getWeather = function(){
 	console.log('getWeather GO');
 	let date = iitsApp.validPasses[iitsApp.pageIndex].risetime;
