@@ -1,4 +1,8 @@
 main{
+	background: linear-gradient(rgba(17,0,21,0.8), rgba(17,0,21,0.8)) , url("../assets/s134e011413.jpg");
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
 	.wrapper{
 		min-height: 100vh;
 		display: flex;
@@ -8,12 +12,41 @@ main{
 		flex-wrap: wrap;
 	}
 }
-
+h1{
+	width: 50%;
+	text-align: right;
+	padding-right: 5px;
+}
+form{
+	// display: block;
+	padding-left: 5px;
+	width: 40%;
+	margin-right: 10%;
+}
 #autocomplete{
 	width: 100%;
 	background: transparent;
 	color: $brightText;
 	padding: 20px;
-	border-bottom: 2px solid white;
+	border: 2px solid white;
 	font-size: 1.6rem;
+}
+.pac-container{
+	background: transparent;
+}
+.pac-icon{
+	display: none;
+}
+.pac-item{
+	// background: transparent;
+	font-family: 'Share Tech Mono', monospace;
+	border: none;
+	border-bottom: 1px solid grey;
+}
+.pac-item-query{
+	color: $brightText;
+}
+.pac-matched{
+	font-weight: 400;
+	text-decoration: underline;
 }
