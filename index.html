@@ -14,7 +14,7 @@
 			<h1>ISS in the Sky</h1>
 			<form action="">
 				<label for="autocomplete">Enter a city</label>
-				<input id="autocomplete" placeholder="Enter a city"  type="text" tabindex="0"></input>
+				<input id="autocomplete" placeholder="Enter a city"  type="text"></input>
 				<!-- <input id="autocomplete" placeholder="Enter a city" onFocus="iitsApp.geolocate()"  type="text"></input> -->
 		     
 			</form> 
@@ -56,6 +56,6 @@
 	<script type="text/javascript" src='scripts/script.js'></script>
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDWt1RlZWDmVpvsEvcsbEIfoSUH3ztceOk
 	&libraries=places&callback=iitsApp.initGoogleMaps"
-  type="text/javascript"></script>
+  type="text/javascript"></script><!-- needs to load after the Javascript because iitsApp.initGoogleMaps needs to exist while the google maps api runs -->
 </body>
 </html>

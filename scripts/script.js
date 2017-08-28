@@ -28,6 +28,7 @@ iitsApp.initGoogleMaps = function() {
 //ripped from the google example code 
 // Bias the autocomplete object to the user's geographical location,
 // as supplied by the browser's 'navigator.geolocation' object.
+//I'm not actually using this function right now because I don't have an SSL certificate for my website so grabbing a location from the browser doesn't work but I've kept it here so if I do get that set up I can just add the code back in quickly
 iitsApp.geolocate = function() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -154,6 +155,7 @@ iitsApp.checksunDate = function(i){
 					//if the arraycounter is >= 5
 					//end the loop
 					//call the getWeather function
+					//RECURSION
 					iitsApp.getWeather();
 				}else{
 					if((i + 1) < iitsApp.passes.length){
