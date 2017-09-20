@@ -15,8 +15,8 @@
 	
 }
 .output--active{
-	top: 20px;
-	bottom: 20px;
+	top: 25px;
+	bottom: 40px;
 	display: flex;
 }
 .output__container{
@@ -65,7 +65,12 @@
 	@include respond-to("small") {
 		width: 50%;
 	}
-
+}
+#prevButton{
+	border-left: none;
+}
+#nextButton{
+	border-right: none;
 }
 #closeResults{
 	font-size: 5rem;
