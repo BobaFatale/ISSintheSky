@@ -4,7 +4,7 @@
 	bottom: 10000px;
 	left: 20px;
 	right: 20px;
-	background-color: $darkPurple;
+	background-color: rgba(17,0,25,0.95);
 	display: none;
 	align-items: center;
 	justify-content: center;
@@ -26,6 +26,9 @@
 	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
+	@include respond-to("small") {
+		justify-content: center;
+	}
 }
 .output__info{
 	width: 85%;
@@ -40,6 +43,9 @@
 	}
 	@include respond-to("medium") {
 		width: 60%;
+	}
+	@include respond-to("small") {
+		order: -1;
 	}
 }
 #closeResults{
@@ -56,6 +62,10 @@
 	font-size: 1.6rem;
 	text-transform: uppercase;
 	padding: 25px 15px;
+	@include respond-to("small") {
+		width: 50%;
+	}
+
 }
 #closeResults{
 	font-size: 5rem;
